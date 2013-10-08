@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce - Name your own price
 Plugin URI: http://seanvoss.com/wooprice
 Description: Allows users to set their own price (can also be used for donations) 
-Version: 0.3
+Version: 0.4
 Author: Sean Voss
 Author URI: http://seanvoss.com/nameyourprice
 
