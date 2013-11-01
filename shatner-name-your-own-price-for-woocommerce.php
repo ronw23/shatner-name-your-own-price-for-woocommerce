@@ -3,7 +3,7 @@
 Plugin Name: WooCommerce - Name your own price
 Plugin URI: http://blog.seanvoss.com/product/shatner
 Description: Allows users to set their own price (can also be used for donations) 
-Version: 0.5
+Version: 0.6
 Author: Sean Voss
 Author URI: http://seanvoss.com/
 

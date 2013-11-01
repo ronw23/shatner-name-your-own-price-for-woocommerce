@@ -74,7 +74,6 @@ class SV_WC_Donation extends WC_Cart
     public function add_price_html($content)
     {
         global $post;
-        var_dump($content);
         if(!$post)
             return;
         $post = get_post_meta($post->ID, '_own_price', true);
