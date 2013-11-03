@@ -2,9 +2,9 @@
 /**
  * Single Product Price, including microdata for SEO
  *
- * @author 		WooThemes
- * @package 	WooCommerce/Templates
- * @version     1.6.4
+ * @author 		WooThemes / Sean Voss
+ * @package 	Shatner/WooCommerce/Templates
+ * @version     1.6.4 - Lolz
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 global $post, $product;
 
 
- $post = get_post_meta($post->ID, '_own_price', true);
+ $own_price = get_post_meta($post->ID, '_own_price', true);
         
-        if($post == 'yes')
+        if($own_price == 'yes')
         {
 ?>
             <script>
