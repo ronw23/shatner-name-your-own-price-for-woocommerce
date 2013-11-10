@@ -6,7 +6,7 @@ class SV_WC_Donation extends WC_Cart
     {
     //    add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
         add_filter('woocommerce_locate_template',       array($this, 'template_override'),10,3);
-        add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_checkbox'));
+        add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_radio'));
         add_action('save_post',                            array($this,  'set_named_price'));
         add_action('woocommerce_add_to_cart',              array($this,  'add_to_cart_hook'));
         add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
@@ -58,17 +58,22 @@ class SV_WC_Donation extends WC_Cart
             } else {
                 update_post_meta($_POST['post_ID'], '_own_price', $_POST['_own_price']);
             }
-        } else {
-            if(get_post_meta($_POST['post_ID'], '_own_price', true )){
-                delete_post_meta($_POST['post_ID'], '_own_price');
-            }
         }
     }
 
-    public function add_donation_checkbox($content)
+    public function add_donation_radio($content)
     {
        global $post;
-       woocommerce_wp_checkbox(array('id' => '_own_price', 'class' => 'wc_own_price short', 'label' => __( 'Name you own price', 'woocommerce' ), 'value'=> 'yes', 'cbvalue' => get_post_meta($post->ID, '_own_price', true ) ? 'yes' : 'no'));
+       woocommerce_wp_radio(array(
+           'id' => '_own_price', 
+           'class' => 'wc_own_price short', 
+           'label' => __( 'Name you own price', 'woocommerce' ), 
+           'options' => array(
+                'yes' => 'yes',
+                'no' => 'no',
+            )
+          )
+       );
     }
 
     public function add_price_html($content)
