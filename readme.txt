@@ -3,7 +3,7 @@ Contributors: seanvoss
 Tags: woocommerce, name your own price, donation, free name your own price, fee donation woocommerce
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 0.8
+Stable tag: 0.9
 Donate link: https://blog.seanvoss.com/shatner/
 License: GPLv2 or later
 
@@ -28,10 +28,10 @@ None at this time
 None at this time
 
 == Changelog ==
+= 0.9 =
+* Change settings to allow disabling of templates and override price template, also add an out of order require
 = 0.8 =
 * Change admin interface from checkbox to radio button, to improve stability. NOTE: you must re-add products to Name your own price on update!
-
-== Changelog ==
 = 0.7 =
 * Fix missing content
 

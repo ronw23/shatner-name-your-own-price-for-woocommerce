@@ -4,14 +4,143 @@ class SV_WC_Donation extends WC_Cart
 
     public function __construct()
     {
-    //    add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
-        add_filter('woocommerce_locate_template',       array($this, 'template_override'),10,3);
-        add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_radio'));
-        add_action('save_post',                            array($this,  'set_named_price'));
-        add_action('woocommerce_add_to_cart',              array($this,  'add_to_cart_hook'));
-        add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
-        add_action('init', array($this, 'init_css'));
+
+        if ( is_admin() ){ // admin actions
+          $this->init_form_fields();
+          add_action( 'admin_menu', array($this, 'add_shatner_menu' ));
+          add_action( 'admin_init', array($this, 'admin_init' ));
+          add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
+        } else {
+
+
+
+            //add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
+            if(get_option('use_shatner_templates') == 1)
+            {
+                add_filter('woocommerce_locate_template',       array($this, 'template_override'),10,3);
+                add_filter('woocommerce_loop_add_to_cart_link', array($this, 'remove_link'),10);
+            }
+
+
+            add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_radio'));
+            add_action('save_post',                            array($this,  'set_named_price'));
+            add_action('woocommerce_add_to_cart',              array($this,  'add_to_cart_hook'));
+            add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
+            add_action('init', array($this, 'init_css'));
+        }
     }
+
+    public function remove_link(){
+        return '';
+    }
+
+public function add_shatner_menu()
+    {
+        add_options_page(
+            'Shatner Plugin Settings', 
+            'Shatner Settings', 
+            'manage_options', 
+            'shatner_plugin', 
+            array($this, 'shatner_plugin_settings_page')
+        );
+    }
+
+    public function shatner_plugin_settings_page()
+    {
+        include(sprintf("%s/templates/settings.php", dirname(__FILE__))); 
+    }
+
+
+    /**
+     * hook into WP's admin_init action hook
+     */
+    public function admin_init()
+    {
+
+        // add your settings section
+        add_settings_section(
+            'wp_plugin_template-section_shatner', 
+            'Shatner Plugin Template Settings', 
+            array(&$this, 'settings_section_shatner_plugin_template'), 
+            'wp_plugin_template_shatner'
+        );
+        
+        foreach($this->form_fields as $setting)
+        {
+
+            // register your plugin's settings
+            register_setting('wp_plugin_template-group-shatner', $setting['title']);
+            // add your setting's fields
+            add_settings_field(
+                $setting['title'], 
+                $setting['description'],
+                array(&$this, 'settings_field_input_'. $setting['type']), 
+                'wp_plugin_template_shatner', 
+                'wp_plugin_template-section_shatner',
+                array(
+                    'field' => $setting['title']
+                )
+            );
+        }
+    } // END public static function activate
+
+    public function init_form_fields()
+    {
+        $this->form_fields = array(
+            array(
+                'type'        => 'radio_button',
+                'title'       => __('use_shatner_templates', 'woothemes'),
+                'description' => __('Shatner Templates override pricing, disable if you want to customize using your theme', 'woothemes'),
+                'default'     => __('1', 'woothemes')
+            )
+        );
+     }
+    
+    public function settings_section_shatner_plugin_template()
+    {
+        // Think of this as help text for the section.
+        echo 'These settings do things for the WP Plugin Template.';
+    }
+    
+    /**
+     * This function provides text inputs for settings fields
+     */
+    public function settings_field_input_text($args)
+    {
+        // Get the field name from the $args array
+        $field = $args['field'];
+        // Get the value of this setting
+        $value = get_option($field);
+        // echo a proper input type="text"
+        echo sprintf('<input type="text" name="%s" id="%s" value="%s" />', $field, $field, $value);
+    } // END public function settings_field_input_text($args)
+
+
+    /**
+     * This function provides text inputs for settings fields
+     */
+    public function settings_field_input_radio_button($args)
+    {
+
+        // Get the field name from the $args array
+        $field = $args['field'];
+        // Get the value of this setting
+        $value = get_option($field);
+        
+        $html = '<input type="radio" id="'.$field.'_1" name="'.$field.'" value="1"' . checked( 1, $value, false ) . '/> ';
+        $html .= ' <label for="'.$field.'_1">Enable</label> <br>';
+        
+        
+        $html .= ' <input type="radio" id="'.$field.'_2" name="'.$field.'" value="2"' . checked( 2, $value, false ) . '/> ';
+        $html .= ' <label for="'.$field.'_2">Disable</label>';
+        
+        echo $html;
+
+    } // END public function settings_field_input_radio($args)
+
+
+
+
 
     public function template_override($template, $template_name, $template_path ) {
     // Modification: Get the template from this plugin, if it exists
@@ -102,6 +231,7 @@ class SV_WC_Donation extends WC_Cart
 
     public function add_custom_price( $cart_object ) {
         global $woocommerce;
+        print "A";
         foreach ( $cart_object->cart_contents as $key => $value ) {
 
                 $named_price = $woocommerce->session->__get($key .'_named_price');
