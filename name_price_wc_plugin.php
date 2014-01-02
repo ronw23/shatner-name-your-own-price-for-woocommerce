@@ -10,6 +10,7 @@ class SV_WC_Donation extends WC_Cart
           add_action( 'admin_menu', array($this, 'add_shatner_menu' ));
           add_action( 'admin_init', array($this, 'admin_init' ));
           add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
+          add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_radio'));
         } else {
 
 

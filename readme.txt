@@ -28,6 +28,8 @@ None at this time
 None at this time
 
 == Changelog ==
+= 1.0 =
+* Fix missing admin button
 = 0.9 =
 * Change settings to allow disabling of templates and override price template, also add an out of order require
 = 0.8 =
