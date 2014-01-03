@@ -232,7 +232,6 @@ public function add_shatner_menu()
 
     public function add_custom_price( $cart_object ) {
         global $woocommerce;
-        print "A";
         foreach ( $cart_object->cart_contents as $key => $value ) {
 
                 $named_price = $woocommerce->session->__get($key .'_named_price');
