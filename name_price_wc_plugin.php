@@ -11,9 +11,8 @@ class SV_WC_Donation extends WC_Cart
           add_action( 'admin_init', array($this, 'admin_init' ));
           add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
           add_action('woocommerce_product_options_pricing',  array($this,  'add_donation_radio'));
+          add_action('save_post',                            array($this,  'set_named_price'));
         } else {
-
-
 
             //add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
             if(get_option('use_shatner_templates') == 1)
