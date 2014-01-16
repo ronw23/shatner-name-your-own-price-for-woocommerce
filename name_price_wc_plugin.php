@@ -15,7 +15,7 @@ class SV_WC_Donation extends WC_Cart
         } else {
 
             //add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
-            if(get_option('use_shatner_templates') == 1)
+            if(get_option('use_shatner_templates', 1 ) == 1)
             {
                 add_filter('woocommerce_locate_template',       array($this, 'template_override'),10,3);
                 add_filter('woocommerce_loop_add_to_cart_link', array($this, 'remove_link'),10);
@@ -196,7 +196,7 @@ public function add_shatner_menu()
        woocommerce_wp_radio(array(
            'id' => '_own_price', 
            'class' => 'wc_own_price short', 
-           'label' => __( 'Name you own price', 'woocommerce' ), 
+           'label' => __( 'Name your own price', 'woocommerce' ), 
            'options' => array(
                 'yes' => 'yes',
                 'no' => 'no',
