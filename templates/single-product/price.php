@@ -19,7 +19,16 @@ if($own_price == 'yes')
 ?>
     <script>
         jQuery(function($){
+
+            $('.cart').click(function(){
+                if(!$('#price').val())
+                {
+                    alert('Enter a price to continue');
+                    return false;
+                }  
+            });
             $('.cart').submit(function(){
+              
                 $('#price').clone().attr('type','hidden').appendTo($('form.cart'));
                 return;
             });

@@ -3,7 +3,7 @@ Contributors: seanvoss
 Tags: woocommerce, name your own price, donation, free name your own price, fee donation woocommerce
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 1.3
+Stable tag: 1.4
 Donate link: https://blog.seanvoss.com/shatner/
 License: GPLv2 or later
 
@@ -29,6 +29,8 @@ None at this time
 
 == Changelog ==
 
+= 1.4 =
+* Force naming a price
 = 1.3 =
 * Fix default template value
 = 1.2 =
