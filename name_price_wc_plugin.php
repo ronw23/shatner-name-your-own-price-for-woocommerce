@@ -5,6 +5,8 @@ class SV_WC_Donation extends WC_Cart
     public function __construct()
     {
 
+        $this->shatner_label = get_option('shatner_label', "Name your own price");
+        wp_enqueue_script('shatner', plugins_url('/shatner.js',__FILE__), array('jquery') );
         if ( is_admin() ){ // admin actions
           $this->init_form_fields();
           add_action( 'admin_menu', array($this, 'add_shatner_menu' ));
@@ -14,7 +16,6 @@ class SV_WC_Donation extends WC_Cart
           add_action('save_post',                            array($this,  'set_named_price'));
         } else {
 
-            //add_filter('woocommerce_get_price_html',           array($this,  'add_price_html'));
             if(get_option('use_shatner_templates', 1 ) == 1)
             {
                 add_filter('woocommerce_locate_template',       array($this, 'template_override'),10,3);
@@ -30,11 +31,20 @@ class SV_WC_Donation extends WC_Cart
         }
     }
 
-    public function remove_link(){
-        return '';
+    public function remove_link($link)
+    {
+        global $post;
+        $post = get_post_meta($post->ID, '_own_price', true);
+
+        if ($post === 'yes')
+            return '';
+
+        return $link;
+
+
     }
 
-public function add_shatner_menu()
+    public function add_shatner_menu()
     {
         add_options_page(
             'Shatner Plugin Settings', 
@@ -61,7 +71,7 @@ public function add_shatner_menu()
         add_settings_section(
             'wp_plugin_template-section_shatner', 
             'Shatner Plugin Template Settings', 
-            array(&$this, 'settings_section_shatner_plugin_template'), 
+            array($this, 'settings_section_shatner_plugin_template'), 
             'wp_plugin_template_shatner'
         );
         
@@ -88,6 +98,12 @@ public function add_shatner_menu()
     {
         $this->form_fields = array(
             array(
+                'type'        => 'text',
+                'title'       => __('shatner_label', 'woothemes'),
+                'description' => __('Shatner Label', 'woothemes'),
+                'default'     => __('Name your own price', 'woothemes')
+            ),
+            array(
                 'type'        => 'radio_button',
                 'title'       => __('use_shatner_templates', 'woothemes'),
                 'description' => __('Shatner Templates override pricing, disable if you want to customize using your theme', 'woothemes'),
@@ -99,7 +115,7 @@ public function add_shatner_menu()
     public function settings_section_shatner_plugin_template()
     {
         // Think of this as help text for the section.
-        echo 'These settings do things for the WP Plugin Template.';
+        echo 'These settings set values for Shatner';
     }
     
     /**
@@ -168,6 +184,14 @@ public function add_shatner_menu()
         global $woocommerce;
         foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values) 
         {
+           $thousands_sep  = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
+           $decimal_sep = stripslashes( get_option( 'woocommerce_price_decimal_sep' ) );
+           $_POST['price'] = str_replace($thousands_sep, '', $_POST['price']);
+           $_POST['price'] = str_replace($decimal_sep, '.', $_POST['price']);
+
+           $_POST['price'] = woocommerce_format_total($_POST['price']);
+            error_log(var_export($_POST,1));
+
             if($cart_item_key == $key)
             {
                 $values['data']->set_price($_POST['price']);
@@ -188,6 +212,13 @@ public function add_shatner_menu()
                 update_post_meta($_POST['post_ID'], '_own_price', $_POST['_own_price']);
             }
         }
+        if($_POST['_own_price_enforce_minimum']){
+            if(!get_post_meta($_POST['post_ID'], '_own_price_enforce_minimum', true )){
+                add_post_meta($_POST['post_ID'], '_own_price_enforce_minimum', $_POST['_own_price_enforce_minimum']);
+            } else {
+                update_post_meta($_POST['post_ID'], '_own_price_enforce_minimum', $_POST['_own_price_enforce_minimum']);
+            }
+        }
     }
 
     public function add_donation_radio($content)
@@ -203,31 +234,18 @@ public function add_shatner_menu()
             )
           )
        );
+       woocommerce_wp_radio(array(
+           'id' => '_own_price_enforce_minimum', 
+           'class' => 'wc_own_price_e short', 
+           'label' => __( 'Enforce minimum price (Regular Price)', 'woocommerce' ), 
+           'options' => array(
+                'yes' => 'yes',
+                'no' => 'no',
+            )
+          )
+        );
     }
 
-    public function add_price_html($content)
-    {
-        global $post;
-        if(!$post)
-            return;
-        $post = get_post_meta($post->ID, '_own_price', true);
-        
-        if($post == 'yes')
-        {
-            print "
-            <script>
-                jQuery(function($){
-                    $('.cart').submit(function(){
-                        $('#price').clone().attr('type','hidden').appendTo($('form.cart'));
-                        return;
-                    });
-                });
-            </script>";
-            return sprintf("<div class='name_price'><label>%s</label><input name='price' id='price' type='text' /></div>", "Name your own price");
-        }
-        return ;
-        
-    }
 
     public function add_custom_price( $cart_object ) {
         global $woocommerce;

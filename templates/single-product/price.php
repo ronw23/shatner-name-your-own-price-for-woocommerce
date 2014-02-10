@@ -13,32 +13,23 @@ global $post, $product;
 
 
 $own_price = get_post_meta($post->ID, '_own_price', true);
+$enforce_minimum = get_post_meta($post->ID, '_own_price_enforce_minimum', true);
         
 if($own_price == 'yes')
 {
 ?>
-    <script>
-        jQuery(function($){
-
-            $('.cart').click(function(){
-                if(!$('#price').val())
-                {
-                    alert('Enter a price to continue');
-                    return false;
-                }  
-            });
-            $('.cart').submit(function(){
-              
-                $('#price').clone().attr('type','hidden').appendTo($('form.cart'));
-                return;
-            });
-        });
-    </script>
     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
         <div class="name_price">
+	        <h5 itemprop="price" class="price">Suggested Price: <?php echo $product->get_price_html(); ?></h5>
             <p itemprop="name_price price" class="price">
-              <label>Name your own price</label>
-              <input name='price' id='price' type='text' />
+              <label><?php echo get_option('shatner_label', "Name your own price") ?> </label>
+              <input name='price' class='name_price' type='text' />
+            
+<?php 
+if ($enforce_minimum == 'yes')
+{ ?>
+              <input type="hidden" id="minimum_price" name="minimum_price" value="<?php echo $product->get_price() ?>" />
+<?php } ?>
             </p>
         </div>
 
