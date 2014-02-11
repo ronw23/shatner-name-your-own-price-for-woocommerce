@@ -3,7 +3,7 @@ Contributors: seanvoss
 Tags: woocommerce, name your own price, donation, free name your own price, fee donation woocommerce
 Requires at least: 3.0
 Tested up to: 3.6
-Stable tag: 1.5
+Stable tag: 1.6
 Donate link: https://blog.seanvoss.com/shatner/
 License: GPLv2 or later
 
@@ -29,6 +29,8 @@ None at this time
 
 == Changelog ==
 
+= 1.6 =
+* Shatner trying to set prices on all items
 = 1.5 =
 * Allowing enforcing minimum
 = 1.4 =

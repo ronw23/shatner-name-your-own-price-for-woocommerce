@@ -184,12 +184,23 @@ class SV_WC_Donation extends WC_Cart
         global $woocommerce;
         foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values) 
         {
+
+          
+          if(!get_post_meta($values['product_id'], '_own_price', true ) || get_post_meta($values['product_id'], '_own_price', true ) === 'no')
+          {
+            $values['data']->set_price($_POST['price']);
+            continue;
+          }
+
+
            $thousands_sep  = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
            $decimal_sep = stripslashes( get_option( 'woocommerce_price_decimal_sep' ) );
            $_POST['price'] = str_replace($thousands_sep, '', $_POST['price']);
            $_POST['price'] = str_replace($decimal_sep, '.', $_POST['price']);
 
            $_POST['price'] = woocommerce_format_total($_POST['price']);
+
+
             error_log(var_export($_POST,1));
 
             if($cart_item_key == $key)
@@ -251,11 +262,15 @@ class SV_WC_Donation extends WC_Cart
         global $woocommerce;
         foreach ( $cart_object->cart_contents as $key => $value ) {
 
-                $named_price = $woocommerce->session->__get($key .'_named_price');
-                if($named_price)
-                {
-                    $value['data']->price = $named_price;
-                }
+            if(!get_post_meta($value['product_id'], '_own_price', true ) || get_post_meta($value['product_id'], '_own_price', true ) === 'no')
+            {
+              continue;
+            }
+            $named_price = $woocommerce->session->__get($key .'_named_price');
+            if($named_price)
+            {
+                $value['data']->price = $named_price;
+            }
         }
     }
 
