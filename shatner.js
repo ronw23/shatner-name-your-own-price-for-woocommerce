@@ -32,8 +32,10 @@ jQuery(function($){
 
   });
   $('.cart').submit(function(){
-  
-    $('<input name="price" />').val($('input.name_price').val()).attr('type','hidden').appendTo($('form.cart'));
+    if ($(this).children('input[name="price"]').length == 0)
+    {
+        $('<input name="price" />').val($('input.name_price').val()).attr('type','hidden').appendTo($('form.cart'));
+    }
     return;
   });
 });
