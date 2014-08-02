@@ -3,7 +3,7 @@ jQuery(function($){
 
 // Test to see if the price exceeds the minimum price (ie the Suggested Price):
 
-    if($('#minimum_price').length && parseFloat($('#minimum_price').val()) >= parseFloat($('input.name_price').val()))
+    if($('#minimum_price').length && parseFloat($('#minimum_price').val()) > parseFloat($('input.name_price').val()))
     {
         alert('Please offer a price higher than the Minimum Price.');
         return false;
