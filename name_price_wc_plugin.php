@@ -34,9 +34,9 @@ class SV_WC_Donation extends WC_Cart
     public function remove_link($link)
     {
         global $post;
-        $post = get_post_meta($post->ID, '_own_price', true);
+        $meta = get_post_meta($post->ID, '_own_price', true);
 
-        if ($post === 'yes')
+        if ($meta === 'yes')
             return '';
 
         return $link;
