@@ -28,10 +28,21 @@ class SV_WC_Donation extends WC_Cart
             add_action('woocommerce_add_to_cart',              array($this,  'add_to_cart_hook'));
             add_action('woocommerce_before_calculate_totals',  array($this,  'add_custom_price' ));
             add_action('init', array($this, 'init_css'));
+            add_filter('woocommerce_add_cart_item_data', array($this, 'add_cart_item_data'), 10, 3);
         }
     }
 
-    public function remove_link($link)
+    public function add_cart_item_data($cart_item_data, $product_id, $variation_id )
+    {
+        global $_REQUEST;
+        if (get_post_meta($product_id, '_own_price', true) == 'yes')
+        {
+            $cart_item_data['shatner_attribute_price'] = $_REQUEST['price'];
+        }
+        return $cart_item_data;
+    }
+
+   public function remove_link($link)
     {
         global $post;
         $meta = get_post_meta($post->ID, '_own_price', true);
